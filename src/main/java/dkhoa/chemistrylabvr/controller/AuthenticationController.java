@@ -5,6 +5,7 @@ import dkhoa.chemistrylabvr.dto.request.RegisterRequest;
 import dkhoa.chemistrylabvr.entity.User;
 import dkhoa.chemistrylabvr.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Login, register, logout")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class AuthenticationController {
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody LoginRequest dto) {
