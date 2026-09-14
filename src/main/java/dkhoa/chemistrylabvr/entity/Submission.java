@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -48,7 +49,7 @@ public class Submission {
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "submitted_at", nullable = false)
-    private OffsetDateTime submittedAt;
+    private Instant submittedAt;
 
 
 }

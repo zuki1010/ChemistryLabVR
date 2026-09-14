@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -29,7 +30,7 @@ public class Category {
     @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
 
 
 }
