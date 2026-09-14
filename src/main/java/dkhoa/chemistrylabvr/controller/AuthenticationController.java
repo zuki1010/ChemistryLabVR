@@ -26,4 +26,9 @@ public class AuthenticationController {
         authenticationService.register(dto);
         return ResponseEntity.ok("Register Successfully");
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok(null);
+    }
 }
