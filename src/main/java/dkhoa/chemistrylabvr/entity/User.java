@@ -1,8 +1,11 @@
 package dkhoa.chemistrylabvr.entity;
 
+import dkhoa.chemistrylabvr.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -13,6 +16,8 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "\"User\"")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,7 +38,8 @@ public class User {
 
     @NotNull
     @Column(name = "role", nullable = false, length = Integer.MAX_VALUE)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @NotNull
     @ColumnDefault("true")

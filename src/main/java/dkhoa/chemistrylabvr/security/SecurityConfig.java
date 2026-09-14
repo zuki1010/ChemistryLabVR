@@ -1,4 +1,4 @@
-package dkhoa.chemistrylabvr.config;
+package dkhoa.chemistrylabvr.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Cho phép tất cả API và Swagger chạy tự do
+                        .anyRequest().permitAll()
                 );
         return http.build();
     }
