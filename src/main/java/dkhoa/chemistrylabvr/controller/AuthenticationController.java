@@ -2,6 +2,7 @@ package dkhoa.chemistrylabvr.controller;
 
 import dkhoa.chemistrylabvr.dto.request.LoginRequestDTO;
 import dkhoa.chemistrylabvr.dto.request.RegisterRequestDTO;
+import dkhoa.chemistrylabvr.entity.User;
 import dkhoa.chemistrylabvr.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<User> login(@RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(authenticationService.login(dto));
     }
 
