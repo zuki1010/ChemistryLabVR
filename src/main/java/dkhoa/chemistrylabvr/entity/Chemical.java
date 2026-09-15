@@ -1,11 +1,13 @@
 package dkhoa.chemistrylabvr.entity;
 
+import dkhoa.chemistrylabvr.enums.ChemicalState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 
@@ -29,7 +31,8 @@ public class Chemical {
 
     @NotNull
     @Column(name = "state", nullable = false, length = Integer.MAX_VALUE)
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private ChemicalState state;
 
     @NotNull
     @Column(name = "color_hex", nullable = false, length = Integer.MAX_VALUE)
@@ -46,6 +49,12 @@ public class Chemical {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
+    @Column(name = "density", precision = 10, scale = 3)
+    private BigDecimal density;
+    @Column(name = "danger_level")
+    private Integer dangerLevel;
+    @Column(name = "unit", length = Integer.MAX_VALUE)
+    private String unit;
 
 
 }
