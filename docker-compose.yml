@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Service 1: Database (Ví dụ dùng PostgreSQL)
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: chemistry_db
+    environment:
+      POSTGRES_DB: ChemistryLabVR
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Tdk101004@
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Service 2: Spring Boot App
+  app:
+    build: .
+    container_name: chemistry_app
+    ports:
+      - "10104:10104"
+    depends_on:
+      - postgres-db
+    environment:
+      # Sửa datasource URL trỏ tới tên service 'postgres-db' thay vì localhost
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/chemistry_lab
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+
+volumes:
+  postgres_data:
