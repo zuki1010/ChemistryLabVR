@@ -1,5 +1,6 @@
 package dkhoa.chemistrylabvr.service;
 
+import dkhoa.chemistrylabvr.dto.projection.ChemicalDetail;
 import dkhoa.chemistrylabvr.dto.request.CreateChemical;
 import dkhoa.chemistrylabvr.entity.Chemical;
 import dkhoa.chemistrylabvr.enums.ChemicalState;
@@ -8,6 +9,7 @@ import dkhoa.chemistrylabvr.repository.ChemicalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -19,22 +21,43 @@ public class ChemicalService {
         return chemicalRepository.findAll();
     }
 
-    public Chemical getOne(long id) {
-        return chemicalRepository.findById(id)
+    public ChemicalDetail getOne(Long id) {
+        if(id==null) throw new AppException("id chất không được để trống!");
+        return chemicalRepository.findProjectedById(id)
                 .orElseThrow(() -> new AppException("Chất này không tồn tại!"));
     }
 
     public void create(CreateChemical dto) {
-        if(chemicalRepository.findByFormula(dto.getFormula())) {
+        if(chemicalRepository.existsByFormula(dto.getFormula())) {
             throw new AppException("Công thức hóa học đã tồn tại!");
         }
         String unity_asset_id = generateUnityAsset(dto.getFormula(), dto.getState());
+        Chemical c = new Chemical();
+        c.setName(dto.getName());
+        c.setFormula(dto.getFormula());
+        c.setState(dto.getState());
+        c.setColorHex(dto.getColor_hex());
+        c.setDescription(dto.getDescription());
+        c.setUnityAssetId(unity_asset_id);
+        c.setCreatedAt(Instant.now());
+        c.setDensity(dto.getDensity());
+        c.setDangerLevel(dto.getDanger_level());
+        c.setUnit(dto.getUnit());
+
+        chemicalRepository.save(c);
+    }
+
+    public void update(long id) {
+
+    }
+
+    public void delete(long id) {
 
     }
 
     public String generateUnityAsset(String formula, ChemicalState state) {
         if(formula==null) return "prefab_generic_";
-        return String.format("%s_%s", formula.toLowerCase(), state.name().toLowerCase());
+        return String.format("prefab_%s_%s", state.name().toLowerCase(), formula.toLowerCase());
     }
 
 }

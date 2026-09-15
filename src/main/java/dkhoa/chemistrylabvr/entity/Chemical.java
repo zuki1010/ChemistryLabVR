@@ -3,7 +3,9 @@ package dkhoa.chemistrylabvr.entity;
 import dkhoa.chemistrylabvr.enums.ChemicalState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -14,6 +16,8 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "\"Chemical\"")
 public class Chemical {
     @Id
