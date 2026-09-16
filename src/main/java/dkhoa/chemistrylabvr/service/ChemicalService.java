@@ -51,14 +51,14 @@ public class ChemicalService {
     public void update(long id, UpdateChemical dto) {
         Chemical c = chemicalRepository.findById(id)
                 .orElseThrow(() -> new AppException("Chất này không có trong hệ thống!"));
-        c.setName(dto.getName());
-        c.setFormula(dto.getFormula());
-        c.setColorHex(dto.getColor_hex());
+        c.setName(dto.getName().trim());
+        c.setFormula(dto.getFormula().trim());
+        c.setColorHex(dto.getColor_hex().trim());
         c.setDensity(dto.getDensity());
         c.setState(dto.getState());
         c.setUnit(dto.getUnit());
         c.setDangerLevel(dto.getDanger_level());
-        c.setDescription(dto.getDescription());
+        c.setDescription(dto.getDescription().trim());
         String unity_asset = generateUnityAsset(dto.getFormula(), dto.getState());
         c.setUnityAssetId(unity_asset);
 
@@ -71,7 +71,7 @@ public class ChemicalService {
 
     public String generateUnityAsset(String formula, ChemicalState state) {
         if(formula==null) return "prefab_generic_";
-        return String.format("prefab_%s_%s", state.name().toLowerCase(), formula.toLowerCase());
+        return String.format("prefab_%s_%s", state.name().toLowerCase().trim(), formula.toLowerCase().trim());
     }
 
 }

@@ -25,9 +25,9 @@ public class AuthenticationService {
         if(userRepository.existsByEmail(dto.getEmail())) {
             throw new AppException("Email này đã tồn tại!");
         }
-        u.setEmail(dto.getEmail());
+        u.setEmail(dto.getEmail().trim());
         u.setPassword(dto.getPassword());
-        u.setFullName(dto.getFullName());
+        u.setFullName(dto.getFullName().trim());
         u.setRole(UserRole.STUDENT);
         u.setCreatedAt(Instant.now());
         u.setUpdatedAt(Instant.now());
