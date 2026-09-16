@@ -1,15 +1,13 @@
-# 1. Base Image Java (chọn đúng phiên bản Java bạn đang dùng, vd: OpenJDK 17 hoặc 21)
-FROM eclipse-temurin:21-jdk-alpine
-
-# 2. Thư mục làm việc trong container
+# Stage 1: Tải Maven và tự động build ra file .jar trên Server
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# 3. Copy file JAR vừa build từ máy thật vào container
-# (Thay chemistrylabvr-0.0.1-SNAPSHOT.jar bằng tên file JAR trong thư mục target/ hoặc build/libs/)
-COPY target/*.jar app.jar
-
-# 4. Cổng ứng dụng Spring Boot chạy
+# Stage 2: Tạo môi trường Java gọn nhẹ để chạy file .jar
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 10104
-
-# 5. Lệnh khởi chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]
