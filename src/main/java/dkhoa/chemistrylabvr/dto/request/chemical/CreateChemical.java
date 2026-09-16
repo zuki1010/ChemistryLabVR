@@ -1,4 +1,4 @@
-package dkhoa.chemistrylabvr.dto.request;
+package dkhoa.chemistrylabvr.dto.request.chemical;
 
 import dkhoa.chemistrylabvr.enums.ChemicalState;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,8 @@
 package dkhoa.chemistrylabvr.controller;
 
 import dkhoa.chemistrylabvr.dto.projection.ChemicalDetail;
-import dkhoa.chemistrylabvr.dto.request.CreateChemical;
+import dkhoa.chemistrylabvr.dto.request.chemical.CreateChemical;
+import dkhoa.chemistrylabvr.dto.request.chemical.UpdateChemical;
 import dkhoa.chemistrylabvr.entity.Chemical;
 import dkhoa.chemistrylabvr.service.ChemicalService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,5 +34,12 @@ public class ChemicalController {
     public ResponseEntity<?> createChemical(@RequestBody CreateChemical dto) {
         chemicalService.create(dto);
         return ResponseEntity.ok("Thêm chất thành công");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateChemical(@PathVariable("id") Long chemical_id,
+                                            @RequestBody UpdateChemical dto) {
+        chemicalService.update(chemical_id, dto);
+        return ResponseEntity.ok("Cập nhật thành công");
     }
 }
