@@ -8,6 +8,6 @@ public class RootController {
 
     @GetMapping("/")
     public String healthCheck() {
-        return "Chemistry Lab VR API is running!";
+        return "redirect:/swagger-ui/index.html";
     }
 }
