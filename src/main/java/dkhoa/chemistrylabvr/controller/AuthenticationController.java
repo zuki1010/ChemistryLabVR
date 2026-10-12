@@ -2,6 +2,7 @@ package dkhoa.chemistrylabvr.controller;
 
 import dkhoa.chemistrylabvr.dto.request.authentication.LoginRequest;
 import dkhoa.chemistrylabvr.dto.request.authentication.RegisterRequest;
+import dkhoa.chemistrylabvr.dto.response.authentication.AuthResponse;
 import dkhoa.chemistrylabvr.dto.response.authentication.UserResponse;
 import dkhoa.chemistrylabvr.entity.User;
 import dkhoa.chemistrylabvr.security.SecurityConfig;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@RequestBody LoginRequest dto) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest dto) {
         return ResponseEntity.ok(authenticationService.login(dto));
     }
 
