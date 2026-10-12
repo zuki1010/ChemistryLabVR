@@ -1,12 +1,14 @@
 package dkhoa.chemistrylabvr.service;
 
-import dkhoa.chemistrylabvr.dto.request.LoginRequest;
-import dkhoa.chemistrylabvr.dto.request.RegisterRequest;
+import dkhoa.chemistrylabvr.dto.request.authentication.LoginRequest;
+import dkhoa.chemistrylabvr.dto.request.authentication.RegisterRequest;
+import dkhoa.chemistrylabvr.dto.response.authentication.UserResponse;
 import dkhoa.chemistrylabvr.entity.User;
 import dkhoa.chemistrylabvr.enums.UserRole;
 import dkhoa.chemistrylabvr.exception.AppException;
 import dkhoa.chemistrylabvr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,9 +17,21 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public User login(LoginRequest dto) {
-        return userRepository.findByEmailAndPassword(dto.getEmail(), dto.getPassword());
+    public UserResponse login(LoginRequest dto) {
+        User user = userRepository.findByEmail(dto.getEmail().trim().toLowerCase())
+                .orElseThrow(() -> new AppException("Email hoặc password không hợp lệ!"));
+
+        if(!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new AppException("Email hoặc password không hợp lệ!");
+        }
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getFullName(),
+                user.getRole()
+        );
     }
 
     public void register(RegisterRequest dto) {
@@ -26,7 +40,7 @@ public class AuthenticationService {
             throw new AppException("Email này đã tồn tại!");
         }
         u.setEmail(dto.getEmail().trim());
-        u.setPassword(dto.getPassword());
+        u.setPassword(passwordEncoder.encode(dto.getPassword()));
         u.setFullName(dto.getFullName().trim());
         u.setRole(UserRole.STUDENT);
         u.setCreatedAt(Instant.now());
