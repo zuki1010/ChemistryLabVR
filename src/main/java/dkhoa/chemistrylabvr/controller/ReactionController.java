@@ -2,6 +2,7 @@ package dkhoa.chemistrylabvr.controller;
 
 import dkhoa.chemistrylabvr.entity.Reaction;
 import dkhoa.chemistrylabvr.service.ReactionService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/reaction")
 @Tag(name = "Reaction", description = "CRUD reaction")
