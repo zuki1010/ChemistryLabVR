@@ -1,5 +1,6 @@
 package dkhoa.chemistrylabvr.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +56,33 @@ public class SecurityConfig {
                                 jwtAuthenticationFilter,
                                 UsernamePasswordAuthenticationFilter.class
 
-                );
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("""
+                    {
+                      "status": 401,
+                      "error": "Unauthorized",
+                      "message": "Bạn cần đăng nhập hoặc token không hợp lệ"
+                    }
+                    """);
+                        })
+                        .accessDeniedHandler((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("""
+                    {
+                      "status": 403,
+                      "error": "Forbidden",
+                      "message": "Bạn không có quyền thực hiện thao tác này"
+                    }
+                    """);
+                        }
+                        ));
         return http.build();
     }
 
