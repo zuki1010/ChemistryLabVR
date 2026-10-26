@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class JwtService {
@@ -31,6 +32,7 @@ public class JwtService {
         Instant now = Instant.now();
 
         return Jwts.builder()
+                .setId(UUID.randomUUID().toString())
                 .setSubject(user.getId().toString())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(Date.from(now))

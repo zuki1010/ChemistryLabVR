@@ -7,6 +7,7 @@ import dkhoa.chemistrylabvr.dto.response.authentication.UserResponse;
 import dkhoa.chemistrylabvr.entity.User;
 import dkhoa.chemistrylabvr.security.SecurityConfig;
 import dkhoa.chemistrylabvr.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        return ResponseEntity.ok(null);
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authorization) {
+        authenticationService.logout(authorization);
+        return ResponseEntity.noContent().build();
     }
 }
