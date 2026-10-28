@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class LoginRequest {
     @Email
-    @NotNull
+    @NotNull(message = "Email không được để trống!")
     String email;
-    @NotNull
+    @NotNull(message = "Password không được để trống")
     String password;
 }

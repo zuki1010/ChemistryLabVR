@@ -64,7 +64,7 @@ public class AuthenticationService {
     }
 
     public void logout(String authorization) {
-        String token = authorization.substring(7); // bỏ "Bearer "
+        String token = authorization.substring(7);
 
         Claims claims = jwtService.parseClaims(token);
         String tokenId = claims.getId();
@@ -75,7 +75,6 @@ public class AuthenticationService {
 
         UUID jti = UUID.fromString(tokenId);
 
-        // Gọi logout lần nữa với cùng token thì không tạo bản ghi trùng
         if (revokedAccessTokenRepository.existsById(jti)) {
             return;
         }

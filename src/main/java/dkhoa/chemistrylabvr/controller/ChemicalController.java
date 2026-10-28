@@ -7,6 +7,7 @@ import dkhoa.chemistrylabvr.entity.Chemical;
 import dkhoa.chemistrylabvr.service.ChemicalService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,14 +34,14 @@ public class ChemicalController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createChemical(@RequestBody CreateChemical dto) {
+    public ResponseEntity<?> createChemical(@Valid @RequestBody CreateChemical dto) {
         chemicalService.create(dto);
         return ResponseEntity.ok("Thêm chất thành công");
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateChemical(@PathVariable("id") Long chemical_id,
-                                            @RequestBody UpdateChemical dto) {
+                                            @Valid @RequestBody UpdateChemical dto) {
         chemicalService.update(chemical_id, dto);
         return ResponseEntity.ok("Cập nhật thành công");
     }

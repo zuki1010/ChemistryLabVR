@@ -8,6 +8,7 @@ import dkhoa.chemistrylabvr.enums.ChemicalState;
 import dkhoa.chemistrylabvr.exception.AppException;
 import dkhoa.chemistrylabvr.repository.ChemicalRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,34 +24,41 @@ public class ChemicalService {
     }
 
     public ChemicalDetail getOne(Long id) {
-        if(id==null) throw new AppException("id chất không được để trống!");
+        if(id==null) throw new AppException("id chất không được để trống!", HttpStatus.BAD_REQUEST);
         return chemicalRepository.findProjectedById(id)
-                .orElseThrow(() -> new AppException("Chất này không tồn tại!"));
+                .orElseThrow(() -> new AppException("Chất này không tồn tại!", HttpStatus.NOT_FOUND));
     }
 
     public void create(CreateChemical dto) {
-        if(chemicalRepository.existsByFormula(dto.getFormula())) {
-            throw new AppException("Công thức hóa học đã tồn tại!");
+        if(chemicalRepository.existsByFormula(dto.getFormula().trim())) {
+            throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
+        } else if(chemicalRepository.existsByName(dto.getName().trim())) {
+            throw new AppException("Tên chất này đã tồn tại!", HttpStatus.CONFLICT);
         }
         String unity_asset_id = generateUnityAsset(dto.getFormula(), dto.getState());
         Chemical c = new Chemical();
-        c.setName(dto.getName());
-        c.setFormula(dto.getFormula());
+        c.setName(dto.getName().trim());
+        c.setFormula(dto.getFormula().trim());
         c.setState(dto.getState());
-        c.setColorHex(dto.getColor_hex());
+        c.setColorHex(dto.getColor_hex().trim());
         c.setDescription(dto.getDescription());
         c.setUnityAssetId(unity_asset_id);
         c.setCreatedAt(Instant.now());
         c.setDensity(dto.getDensity());
         c.setDangerLevel(dto.getDanger_level());
-        c.setUnit(dto.getUnit());
+        c.setUnit(dto.getUnit().trim());
 
         chemicalRepository.save(c);
     }
 
     public void update(long id, UpdateChemical dto) {
         Chemical c = chemicalRepository.findById(id)
-                .orElseThrow(() -> new AppException("Chất này không có trong hệ thống!"));
+                .orElseThrow(() -> new AppException("Chất này không có trong hệ thống!", HttpStatus.NOT_FOUND));
+        if(chemicalRepository.existsByFormulaIgnoreCaseAndIdNot(dto.getFormula().trim(), id)) {
+            throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
+        } else if(chemicalRepository.existsByNameIgnoreCaseAndIdNot(dto.getName().trim(), id)) {
+            throw new AppException("Tên chất này đã tồn tại!", HttpStatus.CONFLICT);
+        }
         c.setName(dto.getName().trim());
         c.setFormula(dto.getFormula().trim());
         c.setColorHex(dto.getColor_hex().trim());
@@ -58,7 +66,7 @@ public class ChemicalService {
         c.setState(dto.getState());
         c.setUnit(dto.getUnit());
         c.setDangerLevel(dto.getDanger_level());
-        c.setDescription(dto.getDescription().trim());
+        c.setDescription(dto.getDescription());
         String unity_asset = generateUnityAsset(dto.getFormula(), dto.getState());
         c.setUnityAssetId(unity_asset);
 
