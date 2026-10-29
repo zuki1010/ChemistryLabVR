@@ -30,9 +30,9 @@ public class ChemicalService {
     }
 
     public void create(CreateChemical dto) {
-        if(chemicalRepository.existsByFormula(dto.getFormula().trim())) {
+        if(chemicalRepository.existsByFormulaIgnoreCase(dto.getFormula().trim())) {
             throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
-        } else if(chemicalRepository.existsByName(dto.getName().trim())) {
+        } else if(chemicalRepository.existsByNameIgnoreCase(dto.getName().trim())) {
             throw new AppException("Tên chất này đã tồn tại!", HttpStatus.CONFLICT);
         }
         String unity_asset_id = generateUnityAsset(dto.getFormula(), dto.getState());
@@ -46,7 +46,7 @@ public class ChemicalService {
         c.setCreatedAt(Instant.now());
         c.setDensity(dto.getDensity());
         c.setDangerLevel(dto.getDanger_level());
-        c.setUnit(dto.getUnit().trim());
+        c.setUnit(defaultUnitFor(dto.getState()));
 
         chemicalRepository.save(c);
     }
@@ -64,7 +64,7 @@ public class ChemicalService {
         c.setColorHex(dto.getColor_hex().trim());
         c.setDensity(dto.getDensity());
         c.setState(dto.getState());
-        c.setUnit(dto.getUnit());
+        c.setUnit(defaultUnitFor(dto.getState()));
         c.setDangerLevel(dto.getDanger_level());
         c.setDescription(dto.getDescription());
         String unity_asset = generateUnityAsset(dto.getFormula(), dto.getState());
@@ -80,6 +80,14 @@ public class ChemicalService {
     public String generateUnityAsset(String formula, ChemicalState state) {
         if(formula==null) return "prefab_generic_";
         return String.format("prefab_%s_%s", state.name().toLowerCase().trim(), formula.toLowerCase().trim());
+    }
+
+    public String defaultUnitFor(ChemicalState state) {
+        return switch (state) {
+            case GAS -> "L";
+            case SOLID -> "g";
+            case LIQUID -> "mL";
+        };
     }
 
 }

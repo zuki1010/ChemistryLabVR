@@ -21,11 +21,15 @@ public class CreateChemical {
     private String formula;
     @NotNull(message = "Trạng thái của chất không được để trống!")
     private ChemicalState state;
+    @NotBlank(message = "Màu của chất không được để trống, nếu không màu vui lòng chọn màu trắng")
     @Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Màu phải ở định dạng hexa")
     private String color_hex;
+    @Size(max = 255)
     private String description;
-    @Positive
+    @Positive(message = "Khối lượng riêng phải lớn hơn 0")
     private BigDecimal density;
-    private int danger_level;
-    private String unit;
+    @NotNull
+    @Min(1)
+    @Max(5)
+    private Integer danger_level;
 }

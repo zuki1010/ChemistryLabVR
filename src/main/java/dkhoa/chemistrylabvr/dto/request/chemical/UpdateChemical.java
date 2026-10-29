@@ -19,13 +19,17 @@ public class UpdateChemical {
     private String name;
     @NotBlank(message = "Ký hiệu hóa học không được để trống!")
     private String formula;
-    @Positive
+    @Positive(message = "Khối lượng riêng phải lớn hơn 0")
     private BigDecimal density;
-    private int danger_level;
+    @NotNull
+    @Min(1)
+    @Max(5)
+    private Integer danger_level;
+    @Size(max = 255)
     private String description;
     @NotNull(message = "Trạng thái của chất không được để trống!")
     private ChemicalState state;
-    private String unit;
+    @NotBlank(message = "Màu của chất không được để trống, nếu không màu vui lòng chọn màu trắng")
     @Pattern(regexp = "^#[0-9a-fA-F]{6}$", message = "Màu phải ở định dạng hexa")
     private String color_hex;
 }
