@@ -20,7 +20,7 @@ public class ChemicalService {
     private final ChemicalRepository chemicalRepository;
 
     public List<Chemical> getAll() {
-        return chemicalRepository.findAll();
+        return chemicalRepository.findAllByIsDeleted(false);
     }
 
     public ChemicalDetail getOne(Long id) {
@@ -30,6 +30,9 @@ public class ChemicalService {
     }
 
     public void create(CreateChemical dto) {
+        if(chemicalRepository.existsByFormulaAndIsDeleted(dto.getFormula(), true)) {
+            throw new AppException("Chất này đã bị xóa, vui lòng khôi phục lại nếu bạn cần đến.", HttpStatus.BAD_REQUEST);
+        }
         if(chemicalRepository.existsByFormula(dto.getFormula().trim())) {
             throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
         } else if(chemicalRepository.existsByNameIgnoreCase(dto.getName().trim())) {
@@ -54,6 +57,9 @@ public class ChemicalService {
     public void update(long id, UpdateChemical dto) {
         Chemical c = chemicalRepository.findById(id)
                 .orElseThrow(() -> new AppException("Chất này không có trong hệ thống!", HttpStatus.NOT_FOUND));
+        if(c.getIsDeleted()) {
+            throw new AppException("Chất này đã bị xóa!", HttpStatus.BAD_REQUEST);
+        }
         if(chemicalRepository.existsByFormulaAndIdNot(dto.getFormula().trim(), id)) {
             throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
         } else if(chemicalRepository.existsByNameIgnoreCaseAndIdNot(dto.getName().trim(), id)) {
@@ -74,7 +80,12 @@ public class ChemicalService {
     }
 
     public void delete(long id) {
+        Chemical chemical = chemicalRepository.findById(id)
+                .orElseThrow(() -> new AppException("Chất này không có trong hệ thống!", HttpStatus.NOT_FOUND));
 
+        chemical.setIsDeleted(true);
+
+        chemicalRepository.save(chemical);
     }
 
     public String generateUnityAsset(String formula, ChemicalState state) {

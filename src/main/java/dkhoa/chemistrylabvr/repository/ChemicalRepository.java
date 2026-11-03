@@ -4,10 +4,10 @@ import dkhoa.chemistrylabvr.dto.projection.ChemicalDetail;
 import dkhoa.chemistrylabvr.entity.Chemical;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ChemicalRepository extends JpaRepository<Chemical, Long> {
-    boolean findByFormula(String formula);
     Optional<ChemicalDetail> findProjectedById(Long id);
 
     boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
@@ -17,4 +17,12 @@ public interface ChemicalRepository extends JpaRepository<Chemical, Long> {
     boolean existsByFormulaAndIdNot(String formula, Long id);
 
     boolean existsByFormula(String formula);
+
+    List<Chemical> findAllByIsDeleted(Boolean isDeleted);
+
+    boolean findByFormula(String formula);
+
+    boolean findByFormulaAndIsDeleted(String formula, Boolean isDeleted);
+
+    boolean existsByFormulaAndIsDeleted(String formula, Boolean isDeleted);
 }

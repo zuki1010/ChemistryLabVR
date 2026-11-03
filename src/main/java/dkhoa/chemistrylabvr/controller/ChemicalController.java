@@ -45,4 +45,10 @@ public class ChemicalController {
         chemicalService.update(chemical_id, dto);
         return ResponseEntity.ok("Cập nhật thành công");
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteChemical(@PathVariable("id") Long chemical_id) {
+        chemicalService.delete(chemical_id);
+        return ResponseEntity.noContent().build();
+    }
 }

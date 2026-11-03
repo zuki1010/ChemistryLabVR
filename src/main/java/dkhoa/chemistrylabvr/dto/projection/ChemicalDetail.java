@@ -11,4 +11,5 @@ public interface ChemicalDetail {
     Double getDensity();
     int getDangerLevel();
     String getUnit();
+    Boolean getIsDeleted();
 }

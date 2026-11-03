@@ -59,6 +59,10 @@ public class Chemical {
     private Integer dangerLevel;
     @Column(name = "unit", length = Integer.MAX_VALUE)
     private String unit;
+    @NotNull
+    @ColumnDefault("false")
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 
 
 }
