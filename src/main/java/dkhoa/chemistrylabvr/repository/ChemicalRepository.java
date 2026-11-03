@@ -12,9 +12,9 @@ public interface ChemicalRepository extends JpaRepository<Chemical, Long> {
 
     boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 
-    boolean existsByFormulaIgnoreCaseAndIdNot(String formula, Long id);
-
-    boolean existsByFormulaIgnoreCase(String formula);
-
     boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByFormulaAndIdNot(String formula, Long id);
+
+    boolean existsByFormula(String formula);
 }

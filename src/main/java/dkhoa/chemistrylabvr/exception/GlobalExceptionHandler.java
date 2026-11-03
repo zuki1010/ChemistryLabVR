@@ -2,12 +2,14 @@ package dkhoa.chemistrylabvr.exception;
 
 import dkhoa.chemistrylabvr.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -68,5 +70,45 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(
+            DataIntegrityViolationException ex,
+            HttpServletRequest request) {
+
+        boolean uniqueConflict = hasSqlState(ex, "23505");
+
+        HttpStatus status = uniqueConflict
+                ? HttpStatus.CONFLICT
+                : HttpStatus.INTERNAL_SERVER_ERROR;
+
+        String message = uniqueConflict
+                ? "Tên hoặc công thức hóa học đã tồn tại!"
+                : "Không thể lưu dữ liệu.";
+
+        ErrorResponse body = ErrorResponse.builder()
+                .timestamp(Instant.now())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(message)
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(status).body(body);
+    }
+
+    private boolean hasSqlState(Throwable ex, String expectedState) {
+        Throwable current = ex;
+
+        while (current != null) {
+            if (current instanceof SQLException sqlException
+                    && expectedState.equals(sqlException.getSQLState())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+
+        return false;
     }
 }

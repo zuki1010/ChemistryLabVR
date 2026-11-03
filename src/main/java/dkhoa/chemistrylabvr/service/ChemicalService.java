@@ -30,7 +30,7 @@ public class ChemicalService {
     }
 
     public void create(CreateChemical dto) {
-        if(chemicalRepository.existsByFormulaIgnoreCase(dto.getFormula().trim())) {
+        if(chemicalRepository.existsByFormula(dto.getFormula().trim())) {
             throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
         } else if(chemicalRepository.existsByNameIgnoreCase(dto.getName().trim())) {
             throw new AppException("Tên chất này đã tồn tại!", HttpStatus.CONFLICT);
@@ -54,7 +54,7 @@ public class ChemicalService {
     public void update(long id, UpdateChemical dto) {
         Chemical c = chemicalRepository.findById(id)
                 .orElseThrow(() -> new AppException("Chất này không có trong hệ thống!", HttpStatus.NOT_FOUND));
-        if(chemicalRepository.existsByFormulaIgnoreCaseAndIdNot(dto.getFormula().trim(), id)) {
+        if(chemicalRepository.existsByFormulaAndIdNot(dto.getFormula().trim(), id)) {
             throw new AppException("Công thức hóa học đã tồn tại!", HttpStatus.CONFLICT);
         } else if(chemicalRepository.existsByNameIgnoreCaseAndIdNot(dto.getName().trim(), id)) {
             throw new AppException("Tên chất này đã tồn tại!", HttpStatus.CONFLICT);
