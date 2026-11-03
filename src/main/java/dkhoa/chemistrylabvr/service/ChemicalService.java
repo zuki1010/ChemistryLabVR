@@ -79,7 +79,7 @@ public class ChemicalService {
 
     public String generateUnityAsset(String formula, ChemicalState state) {
         if(formula==null) return "prefab_generic_";
-        return String.format("prefab_%s_%s", state.name().trim(), formula.toLowerCase().trim());
+        return String.format("prefab_%s_%s", state.name().toLowerCase().trim(), formula.trim());
     }
 
     public String defaultUnitFor(ChemicalState state) {
