@@ -1,5 +1,6 @@
 package dkhoa.chemistrylabvr.controller;
 
+import dkhoa.chemistrylabvr.dto.response.reaction.ReactionList;
 import dkhoa.chemistrylabvr.entity.Reaction;
 import dkhoa.chemistrylabvr.service.ReactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,12 +21,12 @@ public class ReactionController {
     private final ReactionService reactionService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Reaction>> getAll() {
+    public ResponseEntity<List<ReactionList>> getAll() {
         return ResponseEntity.ok(reactionService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reaction> getOne(@PathVariable("id") Long reactionId) {
+    public ResponseEntity<ReactionList> getOne(@PathVariable("id") Long reactionId) {
         return ResponseEntity.ok(reactionService.getOne(reactionId));
     }
 }
