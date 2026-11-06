@@ -1,5 +1,6 @@
 package dkhoa.chemistrylabvr.service;
 
+import dkhoa.chemistrylabvr.dto.request.reaction.CreateReaction;
 import dkhoa.chemistrylabvr.dto.response.reaction.ReactionComponent;
 import dkhoa.chemistrylabvr.dto.response.reaction.ReactionList;
 import dkhoa.chemistrylabvr.entity.Reaction;
@@ -18,7 +19,6 @@ import java.util.List;
 public class ReactionService {
     private final ReactionRepository reactionRepository;
     private final ObjectMapper objectMapper;
-    private Reaction reaction;
 
     public List<ReactionList> getAll() {
         return reactionRepository.findAll()
@@ -33,8 +33,9 @@ public class ReactionService {
         return toReactionList(reaction);
     }
 
-    public void create() {
+    public void create(CreateReaction dto) {
 
+        Reaction reaction = new Reaction();
     }
 
     private ReactionList toReactionList(Reaction reaction) {
@@ -56,6 +57,7 @@ public class ReactionService {
                 reaction.getEquation(),
                 reactants,
                 products,
+                reaction.getVisualEffectsJson(),
                 reaction.getDescription()
         );
     }

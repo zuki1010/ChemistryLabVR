@@ -7,6 +7,7 @@ public record ReactionList(
         String equation,
         List<ReactionComponent> reactants,
         List<ReactionComponent> products,
+        String visualEffects,
         String description
 ) {
 }

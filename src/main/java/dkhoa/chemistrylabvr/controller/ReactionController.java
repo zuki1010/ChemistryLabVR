@@ -1,10 +1,12 @@
 package dkhoa.chemistrylabvr.controller;
 
+import dkhoa.chemistrylabvr.dto.request.reaction.CreateReaction;
 import dkhoa.chemistrylabvr.dto.response.reaction.ReactionList;
 import dkhoa.chemistrylabvr.entity.Reaction;
 import dkhoa.chemistrylabvr.service.ReactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +30,11 @@ public class ReactionController {
     @GetMapping("/{id}")
     public ResponseEntity<ReactionList> getOne(@PathVariable("id") Long reactionId) {
         return ResponseEntity.ok(reactionService.getOne(reactionId));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@Valid @RequestBody CreateReaction dto) {
+        reactionService.create(dto);
+        return ResponseEntity.ok("Tạo phương trình phản ứng thành công!");
     }
 }
