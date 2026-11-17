@@ -16,9 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateReaction {
     @NotNull
-    private List<ReactionComponent> reactants;
+    private List<ReactionComponentRequest> reactants;
     @NotNull
-    private List<ReactionComponent> products;
+    private List<ReactionComponentRequest> products;
     private String conditions;
     private String visualEffects;
     @Size(max = 255)
