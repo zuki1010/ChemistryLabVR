@@ -7,6 +7,7 @@ public interface ChemicalDetail {
     String getFormula();
     String getState();
     String getColorHex();
+    String getDescription();
     Instant getCreatedAt();
     Double getDensity();
     int getDangerLevel();

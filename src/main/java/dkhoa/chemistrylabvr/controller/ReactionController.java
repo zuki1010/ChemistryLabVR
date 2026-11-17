@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
@@ -35,6 +36,6 @@ public class ReactionController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody CreateReaction dto) {
         reactionService.create(dto);
-        return ResponseEntity.ok("Tạo phương trình phản ứng thành công!");
+        return ResponseEntity.ok(Map.of("message", "Tạo phương trình phản ứng thành công!"));
     }
 }

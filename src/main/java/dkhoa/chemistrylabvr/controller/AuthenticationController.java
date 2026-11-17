@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Login, register, logout")
@@ -30,7 +32,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest dto) {
         authenticationService.register(dto);
-        return ResponseEntity.ok("Register Successfully");
+        return ResponseEntity.ok(Map.of("message", "Đăng ký tài khoản thành công"));
     }
 
     @PostMapping("/logout")

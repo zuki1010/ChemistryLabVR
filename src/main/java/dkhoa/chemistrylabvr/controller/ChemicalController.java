@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
@@ -36,14 +37,14 @@ public class ChemicalController {
     @PostMapping("/create")
     public ResponseEntity<?> createChemical(@Valid @RequestBody CreateChemical dto) {
         chemicalService.create(dto);
-        return ResponseEntity.ok("Thêm chất thành công");
+        return ResponseEntity.ok(Map.of("message", "Thêm chất thành công"));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateChemical(@PathVariable("id") Long chemical_id,
                                             @Valid @RequestBody UpdateChemical dto) {
         chemicalService.update(chemical_id, dto);
-        return ResponseEntity.ok("Cập nhật thành công");
+        return ResponseEntity.ok(Map.of("message", "Cập nhật thành công"));
     }
 
     @DeleteMapping("/delete/{id}")
