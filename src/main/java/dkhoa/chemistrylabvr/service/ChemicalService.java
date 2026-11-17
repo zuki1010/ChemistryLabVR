@@ -50,6 +50,7 @@ public class ChemicalService {
         c.setDensity(dto.getDensity());
         c.setDangerLevel(dto.getDanger_level());
         c.setUnit(defaultUnitFor(dto.getState()));
+        c.setIsDeleted(false);
 
         chemicalRepository.save(c);
     }
