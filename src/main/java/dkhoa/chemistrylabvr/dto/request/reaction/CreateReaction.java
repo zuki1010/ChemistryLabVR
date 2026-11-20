@@ -19,7 +19,7 @@ public class CreateReaction {
     private List<ReactionComponentRequest> reactants;
     @NotNull
     private List<ReactionComponentRequest> products;
-    private String conditions;
+    private ReactionCondition conditions;
     private String visualEffects;
     @Size(max = 255)
     private String description;
