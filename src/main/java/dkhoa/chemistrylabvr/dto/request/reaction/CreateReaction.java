@@ -1,7 +1,6 @@
 package dkhoa.chemistrylabvr.dto.request.reaction;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -26,7 +25,6 @@ public class CreateReaction {
 
     private boolean reversible;
 
-    @NotBlank(message = "Mô tả phản ứng không được để trống")
     @Size(max = 255, message = "Mô tả tối đa 255 ký tự")
     private String description;
 

@@ -93,7 +93,7 @@ public class ReactionService {
 
     private void apply(Reaction reaction, CreateReaction dto, PreparedComponents prepared) {
         reaction.setEquation(buildEquation(dto, prepared));
-        reaction.setDescription(dto.getDescription().trim());
+        reaction.setDescription(dto.getDescription() == null ? "" : dto.getDescription().trim());
         reaction.setIsReversible(dto.isReversible());
         reaction.setSourceReference(trimToNull(dto.getSourceReference()));
         reaction.setConditionsJson(conditionMap(dto.getConditions()));
