@@ -2,7 +2,6 @@ package dkhoa.chemistrylabvr.controller;
 
 import dkhoa.chemistrylabvr.dto.request.reaction.CreateReaction;
 import dkhoa.chemistrylabvr.dto.response.reaction.ReactionList;
-import dkhoa.chemistrylabvr.entity.Reaction;
 import dkhoa.chemistrylabvr.service.ReactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
@@ -34,8 +32,19 @@ public class ReactionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody CreateReaction dto) {
-        reactionService.create(dto);
-        return ResponseEntity.ok(Map.of("message", "Tạo phương trình phản ứng thành công!"));
+    public ResponseEntity<ReactionList> create(@Valid @RequestBody CreateReaction dto) {
+        return ResponseEntity.status(201).body(reactionService.create(dto));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ReactionList> update(@PathVariable Long id,
+                                               @Valid @RequestBody CreateReaction dto) {
+        return ResponseEntity.ok(reactionService.update(id, dto));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        reactionService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

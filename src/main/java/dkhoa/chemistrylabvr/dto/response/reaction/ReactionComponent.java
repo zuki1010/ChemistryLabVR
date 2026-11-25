@@ -1,10 +1,14 @@
 package dkhoa.chemistrylabvr.dto.response.reaction;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import dkhoa.chemistrylabvr.enums.ChemicalState;
+import dkhoa.chemistrylabvr.enums.PhaseChange;
 
 public record ReactionComponent(
-        @JsonProperty("chemical_id") Long chemicalId,
+        Long chemicalId,
         String formula,
-        int coefficient
+        int coefficient,
+        ChemicalState state,
+        String unityAssetId,
+        PhaseChange phaseChange
 ) {
 }

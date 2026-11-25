@@ -1,5 +1,8 @@
 package dkhoa.chemistrylabvr.dto.response.reaction;
 
+import dkhoa.chemistrylabvr.dto.request.reaction.ReactionCondition;
+
+import java.time.Instant;
 import java.util.List;
 
 public record ReactionList(
@@ -7,7 +10,13 @@ public record ReactionList(
         String equation,
         List<ReactionComponent> reactants,
         List<ReactionComponent> products,
-        String visualEffects,
-        String description
+        List<ReactionComponent> catalysts,
+        ReactionCondition conditions,
+        ReactionVisualEffects visualEffects,
+        String description,
+        boolean reversible,
+        String sourceReference,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

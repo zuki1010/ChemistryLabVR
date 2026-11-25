@@ -55,6 +55,21 @@ public class SecurityConfig {
                                 "/api/v1/chemical/**"
                         ).hasAnyRole("LECTURER", "ADMIN")
 
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/reaction/**"
+                        ).hasAnyRole("LECTURER", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/v1/reaction/**"
+                        ).hasAnyRole("LECTURER", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/v1/reaction/**"
+                        ).hasAnyRole("LECTURER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                         .addFilterBefore(
