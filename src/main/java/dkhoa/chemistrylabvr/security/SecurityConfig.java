@@ -40,6 +40,19 @@ public class SecurityConfig {
                                 "/api/v1/chemical/**",
                                 "/api/v1/reaction/**").hasAnyRole("STUDENT", "LECTURER", "ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/api/v1/education/**")
+                                .hasAnyRole("STUDENT", "LECTURER", "ADMIN")
+
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/education/classrooms/join",
+                                "/api/v1/education/class-assignments/*/attempts",
+                                "/api/v1/education/attempts/*/quiz-submit",
+                                "/api/v1/education/attempts/*/practice-submit")
+                                .hasRole("STUDENT")
+
+                        .requestMatchers("/api/v1/education/**")
+                                .hasAnyRole("LECTURER", "ADMIN")
+
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/v1/chemical/**"

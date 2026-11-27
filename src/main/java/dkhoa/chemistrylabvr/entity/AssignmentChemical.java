@@ -22,6 +22,12 @@ public class AssignmentChemical {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "assignment_id", nullable = false)
+    private Assignment assignment;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "chemical_id", nullable = false)
     private Chemical chemical;
 
