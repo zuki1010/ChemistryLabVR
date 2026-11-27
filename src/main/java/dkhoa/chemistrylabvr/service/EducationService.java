@@ -12,6 +12,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 
@@ -163,13 +164,17 @@ public class EducationService {
 
     @Transactional
     public Map<String, Object> dispatch(Long assignmentId, DispatchInput in, UUID user, boolean admin) {
+        require(in != null && in.classroomId() != null, "Hãy chọn lớp học để giao bài");
         Map<String,Object> assignment=assignment(assignmentId); requireOwner(assignment,user,admin);
         require("PUBLISHED".equals(assignment.get("status")), "Chỉ giao được bài đã xuất bản");
         Map<String,Object> classroom=classroom(in.classroomId()); requireOwner(classroom,user,admin); require(Boolean.TRUE.equals(classroom.get("is_active")),"Không thể giao bài vào lớp đã đóng");
         int attempts=in.maxAttempts()==null?1:in.maxAttempts(); require(attempts>=1&&attempts<=20,"Số lần làm phải từ 1 đến 20");
         require(in.opensAt()==null||in.dueAt()==null||!in.opensAt().isAfter(in.dueAt()),"Thời điểm mở bài phải trước hạn nộp");
-        Long id=db.queryForObject("INSERT INTO public.\"ClassAssignment\"(classroom_id,assignment_id,opens_at,due_at,max_attempts) VALUES (:class,:assignment,:opens,:due,:attempts) ON CONFLICT (classroom_id,assignment_id) DO UPDATE SET opens_at=EXCLUDED.opens_at,due_at=EXCLUDED.due_at,max_attempts=EXCLUDED.max_attempts,status='ASSIGNED' RETURNING id",
-                params("class",in.classroomId(),"assignment",assignmentId,"opens",in.opensAt(),"due",in.dueAt(),"attempts",attempts),Long.class);
+        Timestamp opensAt=in.opensAt()==null?null:Timestamp.from(in.opensAt());
+        Timestamp dueAt=in.dueAt()==null?null:Timestamp.from(in.dueAt());
+        Short maxAttempts=(short)attempts;
+        Long id=db.queryForObject("INSERT INTO public.\"ClassAssignment\"(classroom_id,assignment_id,opens_at,due_at,max_attempts) VALUES (:class,:assignment,CAST(:opens AS timestamptz),CAST(:due AS timestamptz),CAST(:attempts AS smallint)) ON CONFLICT (classroom_id,assignment_id) DO UPDATE SET opens_at=EXCLUDED.opens_at,due_at=EXCLUDED.due_at,max_attempts=EXCLUDED.max_attempts,status='ASSIGNED' RETURNING id",
+                params("class",in.classroomId(),"assignment",assignmentId,"opens",opensAt,"due",dueAt,"attempts",maxAttempts),Long.class);
         return classAssignment(id);
     }
 
