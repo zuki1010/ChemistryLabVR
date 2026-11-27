@@ -53,6 +53,9 @@ public class CourseUnit {
     @Column(name = "display_order", nullable = false)
     private Integer displayOrder;
 
+    @Column(name = "semester")
+    private Short semester;
+
     @Size(max = 20)
     @NotNull
     @ColumnDefault("'DRAFT'")

@@ -58,6 +58,7 @@ public class EducationService {
         require(!blank(in.title())&&in.title().trim().length()<=180, "Tiêu đề chủ đề là bắt buộc và tối đa 180 ký tự");
         require(value(in.summary(),"").length()<=500,"Tóm tắt tối đa 500 ký tự");
         int order = in.displayOrder() == null ? 1 : in.displayOrder(); require(order > 0, "Thứ tự phải lớn hơn 0");
+        require(in.semester()==null||in.semester()==1||in.semester()==2,"Học kỳ chỉ nhận giá trị 1, 2 hoặc để trống");
         if (in.parentId() != null) {
             Map<String, Object> parent = unit(in.parentId());
             require(Objects.equals(number(parent.get("course_id")), courseId), "Chủ đề cha phải thuộc cùng học phần");
@@ -65,13 +66,13 @@ public class EducationService {
             if(id!=null){Integer cycle=db.queryForObject("WITH RECURSIVE lineage(id,parent_id) AS (SELECT id,parent_id FROM public.\"CourseUnit\" WHERE id=:parent UNION SELECT p.id,p.parent_id FROM public.\"CourseUnit\" p JOIN lineage l ON p.id=l.parent_id) SELECT count(*) FROM lineage WHERE id=:current",params("parent",in.parentId(),"current",id),Integer.class);require(cycle==null||cycle==0,"Không thể đặt chủ đề con làm chủ đề cha");}
         }
         if (id == null) {
-            Long newId = db.queryForObject("INSERT INTO public.\"CourseUnit\"(course_id,parent_id,title,summary,content,display_order,status) VALUES (:course,:parent,:title,:summary,:content,:ord,:status) RETURNING id",
-                    params("course", courseId, "parent", in.parentId(), "title", in.title().trim(), "summary", value(in.summary(), ""), "content", value(in.content(), ""), "ord", order, "status", status(in.status())), Long.class);
+            Long newId = db.queryForObject("INSERT INTO public.\"CourseUnit\"(course_id,parent_id,title,summary,content,display_order,semester,status) VALUES (:course,:parent,:title,:summary,:content,:ord,:semester,:status) RETURNING id",
+                    params("course", courseId, "parent", in.parentId(), "title", in.title().trim(), "summary", value(in.summary(), ""), "content", value(in.content(), ""), "ord", order, "semester", in.semester(), "status", status(in.status())), Long.class);
             return unit(newId);
         }
         Map<String, Object> old = unit(id); require(Objects.equals(number(old.get("course_id")), courseId), "Chủ đề không thuộc học phần này");
-        db.update("UPDATE public.\"CourseUnit\" SET parent_id=:parent,title=:title,summary=:summary,content=:content,display_order=:ord,status=:status,updated_at=CURRENT_TIMESTAMP WHERE id=:id",
-                params("id", id, "parent", in.parentId(), "title", in.title().trim(), "summary", value(in.summary(), ""), "content", value(in.content(), ""), "ord", order, "status", status(in.status())));
+        db.update("UPDATE public.\"CourseUnit\" SET parent_id=:parent,title=:title,summary=:summary,content=:content,display_order=:ord,semester=:semester,status=:status,updated_at=CURRENT_TIMESTAMP WHERE id=:id",
+                params("id", id, "parent", in.parentId(), "title", in.title().trim(), "summary", value(in.summary(), ""), "content", value(in.content(), ""), "ord", order, "semester", in.semester(), "status", status(in.status())));
         return unit(id);
     }
 
@@ -85,25 +86,25 @@ public class EducationService {
     @Transactional
     public Map<String, Object> createClassroom(ClassroomInput in, UUID user, boolean admin) {
         Map<String, Object> c = course(in.courseId()); require(admin||"PUBLISHED".equals(c.get("status"))||Objects.equals(String.valueOf(c.get("owner_id")),user.toString()),"Bạn không có quyền dùng học phần này"); require("PUBLISHED".equals(c.get("status")),"Chỉ tạo lớp từ học phần đã xuất bản");
-        require(!blank(in.name()) && in.name().trim().length()<=120 && !blank(in.academicYear()) && in.academicYear().trim().length()<=20 && value(in.term(),"").length()<=40, "Tên lớp/năm học/học kỳ không hợp lệ");
+        require(!blank(in.name()) && in.name().trim().length()<=120 && !blank(in.academicYear()) && in.academicYear().trim().length()<=20, "Tên lớp hoặc năm học không hợp lệ");
         String code;
         do { code = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase(Locale.ROOT); }
         while (!db.queryForList("SELECT id FROM public.\"Classroom\" WHERE join_code=:code", params("code", code)).isEmpty());
-        Long id = db.queryForObject("INSERT INTO public.\"Classroom\"(course_id,lecturer_id,name,academic_year,term,join_code) VALUES (:course,:lecturer,:name,:year,:term,:code) RETURNING id",
-                params("course", in.courseId(), "lecturer", user, "name", in.name().trim(), "year", in.academicYear().trim(), "term", value(in.term(), ""), "code", code), Long.class);
+        Long id = db.queryForObject("INSERT INTO public.\"Classroom\"(course_id,lecturer_id,name,academic_year,join_code) VALUES (:course,:lecturer,:name,:year,:code) RETURNING id",
+                params("course", in.courseId(), "lecturer", user, "name", in.name().trim(), "year", in.academicYear().trim(), "code", code), Long.class);
         return classroom(id);
     }
 
     @Transactional
     public Map<String,Object> updateClassroom(Long id,ClassroomInput in,UUID user,boolean admin){
         Map<String,Object> old=classroom(id);requireOwner(old,user,admin);
-        require(!blank(in.name())&&in.name().trim().length()<=120&&!blank(in.academicYear())&&in.academicYear().trim().length()<=20&&value(in.term(),"").length()<=40,"Tên lớp/năm học/học kỳ không hợp lệ");
+        require(!blank(in.name())&&in.name().trim().length()<=120&&!blank(in.academicYear())&&in.academicYear().trim().length()<=20,"Tên lớp hoặc năm học không hợp lệ");
         Long courseId=number(old.get("course_id"));
         if(in.courseId()!=null&&!Objects.equals(in.courseId(),courseId)){
             require(db.queryForList("SELECT id FROM public.\"Enrollment\" WHERE classroom_id=:id",params("id",id)).isEmpty()&&db.queryForList("SELECT id FROM public.\"ClassAssignment\" WHERE classroom_id=:id",params("id",id)).isEmpty(),"Không thể đổi học phần sau khi đã có học viên hoặc bài tập trong lớp");
             Map<String,Object> next=course(in.courseId());require("PUBLISHED".equals(next.get("status")),"Chỉ chuyển lớp sang học phần đã xuất bản");courseId=in.courseId();
         }
-        db.update("UPDATE public.\"Classroom\" SET course_id=:course,name=:name,academic_year=:year,term=:term,updated_at=CURRENT_TIMESTAMP WHERE id=:id",params("id",id,"course",courseId,"name",in.name().trim(),"year",in.academicYear().trim(),"term",value(in.term(),"")));
+        db.update("UPDATE public.\"Classroom\" SET course_id=:course,name=:name,academic_year=:year,updated_at=CURRENT_TIMESTAMP WHERE id=:id",params("id",id,"course",courseId,"name",in.name().trim(),"year",in.academicYear().trim()));
         return classroom(id);
     }
 

@@ -43,12 +43,6 @@ public class Classroom {
     @Column(name = "academic_year", nullable = false, length = 20)
     private String academicYear;
 
-    @Size(max = 40)
-    @NotNull
-    @ColumnDefault("''")
-    @Column(name = "term", nullable = false, length = 40)
-    private String term;
-
     @Size(max = 16)
     @NotNull
     @Column(name = "join_code", nullable = false, length = 16)

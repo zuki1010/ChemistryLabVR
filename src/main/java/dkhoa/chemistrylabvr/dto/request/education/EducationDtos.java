@@ -9,8 +9,8 @@ public final class EducationDtos {
     private EducationDtos() {}
 
     public record CourseInput(String title, String subject, Integer gradeLevel, String description, String status) {}
-    public record UnitInput(Long parentId, String title, String summary, String content, Integer displayOrder, String status) {}
-    public record ClassroomInput(Long courseId, String name, String academicYear, String term) {}
+    public record UnitInput(Long parentId, String title, String summary, String content, Integer displayOrder, Integer semester, String status) {}
+    public record ClassroomInput(Long courseId, String name, String academicYear) {}
     public record JoinInput(String joinCode) {}
     public record ChemicalLimit(Long chemicalId, BigDecimal allowedQuantity) {}
     public record QuizOptionInput(String content, boolean correct) {}
